@@ -16,10 +16,11 @@ module.exports = {
       var locale = info.locale
       var patternParams = info.patternParams
       var translation = info.translation
+      var isRich = info.isRich
 
       var translationAst
       try {
-        translationAst = parse(translation)
+        translationAst = parse(translation, { tagsType: isRich ? '<>' : null })
       } catch (err) {
         return // error handled elsewhere
       }
