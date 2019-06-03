@@ -4,6 +4,10 @@ var parse = require('format-message-parse')
 var getParamsFromPatternAst = require('../util/get-params-from-pattern-ast')
 var visitEachTranslation = require('../util/visit-each-translation')
 
+function isRichTextParam (paramName) {
+  return typeof paramName === 'object' && paramName.isRich === true
+}
+
 module.exports = {
   meta: {
     schema: []
@@ -25,22 +29,24 @@ module.exports = {
         return // error handled elsewhere
       }
 
-      var translationParams = getParamsFromPatternAst(translationAst)
+      var translationParams = getParamsFromPatternAst(translationAst, isRich)
       patternParams.forEach(function (paramName) {
         if (translationParams.indexOf(paramName) < 0) {
+          var paramType = isRichTextParam(paramName) ? 'rich text ' : ''
           context.report(
             (node.arguments && node.arguments[0]) || node,
-            'Translation for "' + id + '" in "' + locale + '" is missing "' +
-              paramName + '" placeholder'
+            'Translation for "' + id + '" in "' + locale + '" is missing ' +
+              paramType + '"' + paramName + '" placeholder'
           )
         }
       })
       translationParams.forEach(function (paramName) {
         if (patternParams.indexOf(paramName) < 0) {
+          var paramType = isRichTextParam(paramName) ? 'rich text ' : ''
           context.report(
             (node.arguments && node.arguments[0]) || node,
-            'Translation for "' + id + '" in "' + locale + '" has extra "' +
-              paramName + '" placeholder'
+            'Translation for "' + id + '" in "' + locale + '" has extra ' +
+              paramType + '"' + paramName + '" placeholder'
           )
         }
       })

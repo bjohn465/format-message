@@ -30,6 +30,13 @@ tester.run('translation-match-params', rule, {
         '})',
       settings: settings,
       parserOptions: { ecmaFeatures: { jsx: true } }
+    },
+    {
+      code: 'var f=require("format-message");' +
+        'f.rich("<s />", { ' +
+          's: function(props) { return props } ' +
+        '})',
+      settings: settings
     }
   ],
   invalid: [
@@ -68,7 +75,7 @@ tester.run('translation-match-params', rule, {
       settings: settings,
       parserOptions: { ecmaFeatures: { jsx: true } },
       errors: [
-        'Translation for "<i>d</i>" in "pt" is missing "rich text <i>" placeholder'
+        'Translation for "<i>d</i>" in "pt" is missing rich text "<i>" placeholder'
       ]
     },
     {
@@ -79,7 +86,7 @@ tester.run('translation-match-params', rule, {
       settings: settings,
       parserOptions: { ecmaFeatures: { jsx: true } },
       errors: [
-        'Translation for "<u>e</u>" in "pt" is missing "rich text <u>" placeholder',
+        'Translation for "<u>e</u>" in "pt" is missing rich text "<u>" placeholder',
         'Translation for "<u>e</u>" in "pt" has extra "u" placeholder'
       ]
     },
@@ -102,7 +109,7 @@ tester.run('translation-match-params', rule, {
       settings: settings,
       parserOptions: { ecmaFeatures: { jsx: true } },
       errors: [
-        'Translation for "<q>g</q>" in "pt" is missing "rich text <q>" placeholder',
+        'Translation for "<q>g</q>" in "pt" is missing rich text "<q>" placeholder',
         'Translation for "<q>g</q>" in "pt" has extra "<q>" placeholder'
       ]
     }

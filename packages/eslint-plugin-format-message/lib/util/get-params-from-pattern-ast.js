@@ -8,14 +8,15 @@ function getRichTag (name) {
   if (cachedTag) return cachedTag
 
   var tag = {
+    isRich: true,
     name: name,
-    toString: function () { return 'rich text <' + name + '>' }
+    toString: function () { return '<' + name + '>' }
   }
   richTagCache.push(tag)
   return tag
 }
 
-module.exports = function getParamsFromPatternAst (ast) {
+module.exports = function getParamsFromPatternAst (ast, isRich) {
   if (!ast || !ast.slice) return []
   var stack = ast.slice()
   var params = []
@@ -26,13 +27,16 @@ module.exports = function getParamsFromPatternAst (ast) {
 
     var name = element[0]
     var type = element[1]
-    if (type === '<>') {
+    var isRichParam = isRich && type === '<>'
+
+    if (isRichParam) {
       name = getRichTag(name)
     }
     if (params.indexOf(name) < 0) params.push(name)
 
-    if (type === 'select' || type === 'plural' || type === 'selectordinal' || type === '<>') {
-      var children = type === 'select' || type === '<>' ? element[2] : element[3]
+    if (type === 'select' || type === 'plural' || type === 'selectordinal' || isRichParam) {
+      var children = type === 'select' || isRichParam ? element[2] : element[3]
+      if (!children) continue
       stack = stack.concat.apply(stack,
         Object.keys(children).map(function (key) { return children[key] })
       )
